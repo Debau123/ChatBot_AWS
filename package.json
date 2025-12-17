@@ -1,0 +1,18 @@
+{
+  "name": "proyecto-bedrock",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/node": "^9.5.1",
+    "@aws-sdk/client-bedrock-agent-runtime": "^3.952.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.948.0",
+    "@aws-sdk/credential-providers": "^3.953.0",
+    "astro": "^5.16.5"
+  }
+}
