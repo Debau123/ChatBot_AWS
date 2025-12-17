@@ -4,20 +4,29 @@ Un chatbot inteligente desarrollado con Astro y AWS Bedrock para ayudar con cons
 
 ## 🚀 Características
 
-- Interfaz de chat moderna y responsive
-- Integración con AWS Bedrock (Claude)
-- Diseño con los colores de la Generalitat Valenciana
-- Respuestas en tiempo real
+- Interfaz de chat moderna y responsive tipo WhatsApp
+- Integración con AWS Bedrock Knowledge Base
+- Guardrail de contenido (InformacionLegal)
+- Diseño profesional con los colores de la Generalitat Valenciana
+- Respuestas en tiempo real con formato mejorado
 - Indicador de escritura animado
 
 ## 📋 Requisitos Previos
 
 - Node.js 18 o superior
-- Token de AWS Bedrock válido
+- Cuenta de AWS con acceso a Bedrock
+- Credenciales de AWS (Access Key y Secret Key)
 
 ## 🛠️ Instalación
 
-1. Las dependencias ya están instaladas. Si necesitas reinstalarlas:
+1. Clonar el repositorio:
+
+```bash
+git clone https://github.com/Debau123/ChatBot_AWS.git
+cd ChatBot_AWS
+```
+
+2. Instalar dependencias:
 
 ```bash
 npm install
@@ -25,11 +34,29 @@ npm install
 
 ## ⚙️ Configuración
 
-El archivo `.env` ya está configurado con tu token de Bedrock. El token tiene una validez de 12 horas.
+1. Copiar el archivo de ejemplo:
 
-Cuando el token expire, necesitarás actualizar la variable `AWS_BEARER_TOKEN_BEDROCK` en el archivo `.env` con un nuevo token.
+```bash
+cp .env.example .env
+```
 
-## 🏃 Ejecución
+2. Configurar las variables de entorno en `.env`:
+
+```env
+AWS_REGION=us-east-1
+AWS_ACCESS_KEY_ID=tu_access_key
+AWS_SECRET_ACCESS_KEY=tu_secret_key
+KNOWLEDGE_BASE_ID=MQR2GQQVAY
+GUARDRAIL_ID=nqlb277f4ejd
+GUARDRAIL_VERSION=DRAFT
+MODEL_ARN=arn:aws:bedrock:us-east-1::foundation-model/amazon.nova-pro-v1:0
+```
+
+### Desarrollo Local con AWS SSO
+
+Si usas AWS SSO localmente, puedes omitir `AWS_ACCESS_KEY_ID` y `AWS_SECRET_ACCESS_KEY`. El código usará automáticamente tu perfil SSO configurado.
+
+## 🏃 Ejecución Local
 
 Para iniciar el servidor de desarrollo:
 
@@ -45,6 +72,35 @@ Para construir para producción:
 npm run build
 npm run preview
 ```
+
+## 🚀 Despliegue en Vercel
+
+1. Subir el proyecto a GitHub (ya realizado)
+
+2. Importar el proyecto en Vercel desde GitHub
+
+3. Configurar las variables de entorno en Vercel:
+   - `AWS_REGION`
+   - `AWS_ACCESS_KEY_ID`
+   - `AWS_SECRET_ACCESS_KEY`
+   - `KNOWLEDGE_BASE_ID`
+   - `GUARDRAIL_ID`
+   - `GUARDRAIL_VERSION`
+   - `MODEL_ARN`
+
+4. Desplegar
+
+**Nota importante**: Para Vercel necesitas credenciales IAM de AWS, no funciona con SSO.
+
+### Crear credenciales IAM para Vercel
+
+1. Ve a AWS IAM Console
+2. Crea un nuevo usuario con acceso programático
+3. Asigna los permisos necesarios para Bedrock:
+   - `bedrock:InvokeModel`
+   - `bedrock:RetrieveAndGenerate`
+4. Guarda las credenciales (Access Key ID y Secret Access Key)
+5. Configura estas credenciales en las variables de entorno de Vercel
 
 ## 📁 Estructura del Proyecto
 

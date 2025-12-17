@@ -1,6 +1,5 @@
 import type { APIRoute } from 'astro';
 import { BedrockAgentRuntimeClient, RetrieveAndGenerateCommand } from '@aws-sdk/client-bedrock-agent-runtime';
-import { fromSSO } from '@aws-sdk/credential-providers';
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -18,8 +17,10 @@ export const POST: APIRoute = async ({ request }) => {
     const region = import.meta.env.AWS_REGION || 'us-east-1';
     const knowledgeBaseId = import.meta.env.KNOWLEDGE_BASE_ID;
     const guardrailId = import.meta.env.GUARDRAIL_ID;
-    const guardrailVersion = import.meta.env.GUARDRAIL_VERSION || '1';
+    const guardrailVersion = import.meta.env.GUARDRAIL_VERSION || 'DRAFT';
     const modelArn = import.meta.env.MODEL_ARN;
+    const awsAccessKeyId = import.meta.env.AWS_ACCESS_KEY_ID;
+    const awsSecretAccessKey = import.meta.env.AWS_SECRET_ACCESS_KEY;
 
     console.log('🔧 Config:', { region, knowledgeBaseId, guardrailId, modelArn });
 
@@ -30,11 +31,19 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    // Crear cliente con credenciales SSO
-    const client = new BedrockAgentRuntimeClient({ 
-      region: region,
-      credentials: fromSSO({ profile: 'gva-academy' })
-    });
+    // Crear cliente con credenciales desde variables de entorno
+    const clientConfig: any = { region };
+    
+    // Si hay credenciales explícitas, usarlas (para Vercel)
+    if (awsAccessKeyId && awsSecretAccessKey) {
+      clientConfig.credentials = {
+        accessKeyId: awsAccessKeyId,
+        secretAccessKey: awsSecretAccessKey
+      };
+    }
+    // Si no, usar las credenciales por defecto (para desarrollo local con SSO)
+    
+    const client = new BedrockAgentRuntimeClient(clientConfig);
 
     // retrieve_and_generate con Knowledge Base y Guardrail
     const command = new RetrieveAndGenerateCommand({
